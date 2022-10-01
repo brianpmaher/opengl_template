@@ -1,5 +1,9 @@
 @echo off
 
+setlocal EnableDelayedExpansion
+
+set "startTime=%time: =0%"
+
 rem ////////////////////////////////////////////////////////////////////////////////
 rem                                   Config
 rem ////////////////////////////////////////////////////////////////////////////////
@@ -8,6 +12,7 @@ rem ////////////////////////////////////////////////////////////////////////////
 
 set debugBuild=0
 set cleanBuildCache=0
+set runAfterBuild=1
 
 :endConfig
 
@@ -94,11 +99,46 @@ copy lib\glfw3.dll build >nul 2>nul
 
 call cl %flags% %defines% %includes% %sources% %libs% /Fe:build\%exeName%
 
+if %errorlevel% == 0 (
+    set compilationSuccess=1
+) else (
+    set compilationSuccess=0
+)
+
 move *.pdb build >nul 2>nul
 
 call del *.obj
 
-if %errorlevel% == 0 (
+:endCompileGame
+
+rem ////////////////////////////////////////////////////////////////////////////////
+rem                              Compilation metrics
+rem ////////////////////////////////////////////////////////////////////////////////
+
+:startCompilationMetrics
+
+set "endTime=%time: =0%"
+
+rem Get elapsed time:
+set "end=!endTime:%time:~8,1%=%%100)*100+1!"  &  set "start=!startTime:%time:~8,1%=%%100)*100+1!"
+set /A "elap=((((10!end:%time:~2,1%=%%100)*60+1!%%100)-((((10!start:%time:~2,1%=%%100)*60+1!%%100), elap-=(elap>>31)*24*60*60*100"
+
+rem Convert elapsed time to HH:MM:SS:CC format:
+set /A "cc=elap%%100+100,elap/=100,ss=elap%%60+100,elap/=60,mm=elap%%60+100,hh=elap/60+100"
+
+echo COMPILE-INFO: build time %hh:~1%%time:~2,1%%mm:~1%%time:~2,1%%ss:~1%%time:~8,1%%cc:~1%
+
+:endCompilationMetrics
+
+rem ////////////////////////////////////////////////////////////////////////////////
+rem                                   Run game
+rem ////////////////////////////////////////////////////////////////////////////////
+
+:startRunGame
+
+if %runAfterBuild% == 0 goto endRunGame
+
+if %compilationSuccess% == 1 (
     if %debugBuild% == 1 (
         call remedybg build\%exeName%
     ) else (
@@ -106,4 +146,4 @@ if %errorlevel% == 0 (
     )
 )
 
-:endCompileGame
+:endRunGame
