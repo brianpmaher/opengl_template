@@ -1,5 +1,8 @@
+#include "./core.h"
+
+#include "./trace_log.h"
+
 #include <stdlib.h>
-#include "./graphics.h"
 
 #pragma warning(push, 0)
 #include <glad/glad.h>
@@ -19,7 +22,7 @@ void InitWindow(int width, int height, const char *windowName)
     window = glfwCreateWindow(width, height, windowName, NULL, NULL);
     if (window == NULL)
     {
-        // TODO: LogError
+        FatalLog("Unable to create window.");
         glfwTerminate();
         exit(-1);
     }
@@ -28,7 +31,7 @@ void InitWindow(int width, int height, const char *windowName)
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        // TODO: LogError
+        FatalLog("Unable to load OpengGL.");
         exit(-1);
     }
 
