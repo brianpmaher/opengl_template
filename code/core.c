@@ -11,28 +11,45 @@
 
 static GLFWwindow *window;
 
+void ForceCloseApplication(void)
+{
+    CloseWindow();
+    exit(-1);
+}
+
+void SetWindowResizable(bool isResizable)
+{
+    glfwWindowHint(GLFW_RESIZABLE, isResizable);
+}
+
+static void HandleWindowResize(GLFWwindow *_window, int width, int height)
+{
+    _window;
+
+    glViewport(0, 0, width, height);
+}
+
 void InitWindow(int width, int height, const char *windowName)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     window = glfwCreateWindow(width, height, windowName, NULL, NULL);
     if (window == NULL)
     {
         FatalLog("Unable to create window.");
-        glfwTerminate();
-        exit(-1);
+        ForceCloseApplication();
     }
 
-    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, HandleWindowResize);
 
+    glfwMakeContextCurrent(window);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         FatalLog("Unable to load OpengGL.");
-        exit(-1);
+        ForceCloseApplication();
     }
 
     glViewport(0, 0, width, height);
@@ -50,13 +67,15 @@ bool WindowShouldClose(void)
     return glfwWindowShouldClose(window);
 }
 
-void SetWindowShouldClose(bool value)
+void SetWindowShouldClose(bool shouldClose)
 {
-    glfwSetWindowShouldClose(window, value);
+    glfwSetWindowShouldClose(window, shouldClose);
 }
 
-void StartDrawing(void)
+void BeginDrawing(void)
 {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void EndDrawing(void)

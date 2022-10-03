@@ -9,7 +9,7 @@ int main(void)
         if (IsKeyDown(KEY_ESCAPE))
             SetWindowShouldClose(true);
 
-        StartDrawing();
+        BeginDrawing();
         EndDrawing();
     }
 

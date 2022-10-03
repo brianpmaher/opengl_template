@@ -4,15 +4,19 @@
 
 #include "./input.h"
 
+void ForceCloseApplication(void);
+
+void SetWindowResizable(bool isResizable);
+
 void InitWindow(int width, int height, const char *windowName);
 
 void CloseWindow(void);
 
 bool WindowShouldClose(void);
 
-void SetWindowShouldClose(bool value);
+void SetWindowShouldClose(bool shouldClose);
 
-void StartDrawing(void);
+void BeginDrawing(void);
 
 void EndDrawing(void);
 
