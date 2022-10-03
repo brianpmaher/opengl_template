@@ -6,6 +6,9 @@ int main(void)
 
     while (!WindowShouldClose())
     {
+        if (IsKeyDown(KEY_ESCAPE))
+            SetWindowShouldClose(true);
+
         StartDrawing();
         EndDrawing();
     }

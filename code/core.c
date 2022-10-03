@@ -46,7 +46,13 @@ void CloseWindow(void)
 bool WindowShouldClose(void)
 {
     glfwPollEvents();
+
     return glfwWindowShouldClose(window);
+}
+
+void SetWindowShouldClose(bool value)
+{
+    glfwSetWindowShouldClose(window, value);
 }
 
 void StartDrawing(void)
@@ -56,4 +62,14 @@ void StartDrawing(void)
 void EndDrawing(void)
 {
     glfwSwapBuffers(window);
+}
+
+bool IsKeyDown(KeyboardKey key)
+{
+    return glfwGetKey(window, key) == GLFW_PRESS;
+}
+
+bool IsKeyUp(KeyboardKey key)
+{
+    return glfwGetKey(window, key) == GLFW_RELEASE;
 }
